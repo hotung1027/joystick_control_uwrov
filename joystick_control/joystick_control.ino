@@ -1,11 +1,11 @@
 // Allocate Pin number for different function
-int joystick_x = 0;
-int joystick_y = 1;
-int led_blue = 2;
-int led_yellow = 3;
+#define joystick_x 0
+#define joystick_y 1
+#define led_blue 2
+#define led_yellow 3
 
 // initialize value;
-int led_blue_out, led_yellow_out;
+//int led_blue_out, led_yellow_out;
 
 void setup() {
   // Setup the communication bps to 9600
