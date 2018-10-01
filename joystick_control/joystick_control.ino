@@ -78,7 +78,7 @@ int analogReadWithPin(int analogReadPin){
     return map(analogReadValue, lowerRange, analogReadMin, 0, 
     tick);
 
-  }else if(analogReadValue > upperRange){
+  }else if(analogReadValue >= upperRange){
     return map(analogReadValue, upperRange, analogReadMax, 0, -tick);
   }
 
