@@ -63,9 +63,11 @@ void loop() {
   delayMicroseconds(100);
   dx = analogReadWithPin(joystickA_x);
   delayMicroseconds(100);
-  //dz = analogReadWithPin(joystickB_y);
+  
+  z = analogRead(Potentiometer);
+  
   motorOutputByValue(x,y,dx,dy);
-  //motorOutputZ(dz);
+  analogWrite(enableC, map(z, 0, 1023, 0, 255);
 }
 
 
@@ -80,8 +82,7 @@ int analogReadWithPin(int analogReadPin){
 
   }else if(analogReadValue >= upperRange){
     return map(analogReadValue, upperRange, analogReadMax, 0, -tick);
-  }
-
+  }else return 0;
 }
 
 int motorOutputByValue(int x, int y, int dx, int dy){
