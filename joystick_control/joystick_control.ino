@@ -1,6 +1,7 @@
 // Allocate Pin number for different function
 #define joystickA_x 14 //A0
 #define joystickA_y 15 //A1
+#define joystickA_sw 3 //D3
 
 //#define joystickB_y 
 
@@ -28,32 +29,36 @@
 //Analog Read Range values
 #define analogReadMax  1023
 #define analogReadMin  0
-#define threshold  100
+#define threshold  200
 
 //Analog Write Range values
 #define analogWriteMax  255
 #define analogWriteMin  0
 
-int lowerRange = analogReadMax / 2 -  threshold;
-int upperRange = analogReadMax / 2 + threshold;
+int lowerRange = (analogReadMax / 2) -  threshold;
+int upperRange = (analogReadMax / 2) + threshold;
 
 
 //Amound to add for each interval
-int tick = 255/10;
+int tick = 255/100;
 
 // initialize value;
 //int led_blue_out, led_yellow_out;
-int x = 0, y = 0, z = 0;
+int x = 0, y = 0, z = 0,sw = 0;
 int dx,dy,dz;
 void setup() {
   // Setup the communication bps to 9600
   Serial.begin(9600);
   // Enable both motor have power supply
-  pinMode(enableA, HIGH);
-  pinMode(enableB, HIGH);
-  // Setup the motor spining direction
-  setDirection(inputA1, inputA2, true);
-  setDirection(inputB1, inputB2, false);
+  pinMode(enableA, OUTPUT);
+  pinMode(enableB, OUTPUT);
+
+  pinMode(inputA1, OUTPUT);
+  pinMode(inputA2, OUTPUT);
+  pinMode(inputB1, OUTPUT);
+  pinMode(inputB2, OUTPUT);
+
+  pinMode(joystickA_sw, INPUT_PULLUP);
 //setDirection(inputC1, inputC2, true);
 }
 
@@ -64,8 +69,25 @@ void loop() {
   dx = analogReadWithPin(joystickA_x);
   delayMicroseconds(100);
   //dz = analogReadWithPin(joystickB_y);
+  
+  sw = digitalRead(joystickA_sw);
+  Serial.println("SW:"+String(sw));
+  if( 0 == sw  ){
+    x = 0;
+    delay(100);
+  }
+  else{
+    y = constrain(y - dy, analogWriteMin, analogWriteMax);
+    x = constrain(x + 2 * dx, -analogWriteMax, analogWriteMax);
+  }
+  
+  // Setup the motor spining direction
+  setDirection(inputA1, inputA2, true);
+  setDirection(inputB1, inputB2, false);
   motorOutputByValue(x,y,dx,dy);
+  
   //motorOutputZ(dz);
+  delay(10);
 }
 
 
@@ -76,21 +98,24 @@ int analogReadWithPin(int analogReadPin){
   int analogReadValue = analogRead(analogReadPin);
   if(analogReadValue < lowerRange){
     return map(analogReadValue, lowerRange, analogReadMin, 0, 
-    tick);
+    -tick);
 
   }else if(analogReadValue >= upperRange){
-    return map(analogReadValue, upperRange, analogReadMax, 0, -tick);
+    return map(analogReadValue, upperRange, analogReadMax, 0, tick);
+  }else{
+    return 0;
   }
 
 }
 
 int motorOutputByValue(int x, int y, int dx, int dy){
   //The value of analogWrite will be constrain within the range of analog Write after add of minus changes after the calculation
-  y = constrain(y + dy, analogWriteMin, analogWriteMax);
-  x = constrain(x + dx, -analogWriteMax, analogWriteMax);
+
   /* For -255<- x ->255
   *       0 < y <= 255
   */
+  Serial.println("X:"+String(x));
+  Serial.println("Y:"+String(y));
   bool clockwise = (x >= 0);
   analogWriteTurning(enableB, enableA, y, x, analogWriteMin, analogWriteMax, clockwise);
 }
@@ -120,12 +145,12 @@ void analogWriteTurning(int pinL,int pinR,int s,int ds,int lower, int upper,bool
 void setDirection(int in1, int in2, bool clockwise){
   // if clockwise is true, the input direction is reversed
   if(clockwise){
-    pinMode(in1, HIGH);
-    pinMode(in2, LOW);
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
   }
   else{
-    pinMode(in1, LOW);
-    pinMode(in2, HIGH);  
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);  
   }
 }
 
