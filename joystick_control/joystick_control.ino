@@ -77,13 +77,14 @@ void loop() {
     delay(100);
   }
   else{
-    y = constrain(y - dy, analogWriteMin, analogWriteMax);
-    x = constrain(x + 2 * dx, -analogWriteMax, analogWriteMax);
+    y = constrain(y - dy, -analogWriteMax, analogWriteMax);
+    // immediate turning
+    x = constrain(
+      map(dx, -tick, tick, -analogWriteMax, analogWriteMax),
+      -analogWriteMax, analogWriteMax);
   }
   
   // Setup the motor spining direction
-  setDirection(inputA1, inputA2, true);
-  setDirection(inputB1, inputB2, false);
   motorOutputByValue(x,y,dx,dy);
   
   //motorOutputZ(dz);
@@ -124,7 +125,10 @@ void analogWriteTurning(int pinL,int pinR,int s,int ds,int lower, int upper,bool
   // dir :True -> clockwise turning, False -> counter-clockwise turning
   //Assume 0 < s < {R}
   // -{R} < ds < {R}
-  int outputValue = constrain(s-abs(ds), lower, upper);
+
+  setDirection(inputA1, inputA2, (y>=0));
+  setDirection(inputB1, inputB2, !(y>=0));
+  int outputValue = constrain(abs(s)-abs(ds), lower, upper);
   if(dir){
     analogWrite(pinL,s);
     analogWrite(pinR,outputValue);
