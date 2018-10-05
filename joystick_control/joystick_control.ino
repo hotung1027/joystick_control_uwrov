@@ -3,6 +3,9 @@
 #define joystickA_y 15 //A1
 #define joystickA_sw 3 //D3
 
+// Potentiometer
+#define pmeter 16 //A2
+
 //#define joystickB_y 
 
 /* Motor Placement
@@ -22,8 +25,8 @@
 #define inputB2 10 //D10
 
 //Motor C
-//#define enableC
-//#define inputC1
+#define enableC 11 //D11
+//#define inputC1 
 //#define inputC2
 
 //Analog Read Range values
@@ -52,6 +55,7 @@ void setup() {
   // Enable both motor have power supply
   pinMode(enableA, OUTPUT);
   pinMode(enableB, OUTPUT);
+  pinMode(enableC, OUTPUT);
 
   pinMode(inputA1, OUTPUT);
   pinMode(inputA2, OUTPUT);
@@ -69,7 +73,7 @@ void loop() {
   dx = analogReadWithPin(joystickA_x);
   delayMicroseconds(100);
   //dz = analogReadWithPin(joystickB_y);
-  
+  dz = analogRead(pmeter);
   sw = digitalRead(joystickA_sw);
   Serial.println("SW:"+String(sw));
   if( 0 == sw  ){
@@ -87,7 +91,7 @@ void loop() {
   // Setup the motor spining direction
   motorOutputByValue(x,y,dx,dy);
   
-  //motorOutputZ(dz);
+  motorOutputZ(dz);
   delay(10);
 }
 
@@ -138,12 +142,12 @@ void analogWriteTurning(int pinL,int pinR,int s,int ds,int lower, int upper,bool
   }
 }
 
-//void motorOutputZ(int dz){
-//  z = constrain(z + dz, -analogWriteMax, analogWriteMax);
-//  bool dir =  (z>=0);
+void motorOutputZ(int dz){
+  z = constrain(dz, -analogWriteMax, analogWriteMax);
+  bool dir =  (z>=0);
 //  setDirection(inputC1,inputC2,dir);
-//  analogWrite(enableC, abs(z));
-//}
+  analogWrite(enableC, abs(z));
+}
 
 
 void setDirection(int in1, int in2, bool clockwise){
