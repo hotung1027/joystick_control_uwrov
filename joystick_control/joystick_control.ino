@@ -104,7 +104,7 @@ void motorOutput(int en, int in1,int in2,int s,int lower, int upper,bool dir){
 
   setDirection(in1, in2, !((s>=0)^(dir)));
   int outputValue = constrain(abs(s), lower, upper);
-  analogWrite(en,s);
+  analogWrite(en,outputValue);
 
 }
 
