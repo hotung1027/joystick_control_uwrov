@@ -75,9 +75,9 @@ void loop() {
   c = analogReadWithPin(pmeter);
 
   // Setup the motor spining direction
-  motorOutput(enableA, inputA1, inputA2, a,  analogWriteMin, analogReadMax, true);
-  motorOutput(enableB, inputB1, inputB2, b,  analogWriteMin, analogReadMax, false);
-  motorOutput(enableC, inputC1, inputC2, c,  analogWriteMin, analogReadMax, true);
+  motorOutput(enableA, inputA1, inputA2, a,  analogWriteMin, analogWriteMax, true);
+  motorOutput(enableB, inputB1, inputB2, b,  analogWriteMin, analogWriteMax, false);
+  motorOutput(enableC, inputC1, inputC2, c,  analogWriteMin, analogWriteMax, true);
   delay(10);
 }
 
