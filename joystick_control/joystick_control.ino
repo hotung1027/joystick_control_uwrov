@@ -37,11 +37,11 @@
 #define analogWriteMax  255
 #define analogWriteMin  0
 
-int lowerRange = (analogReadMax / 2) -  threshold;
+int lowerRange = (analogReadMax / 2) - threshold;
 int upperRange = (analogReadMax / 2) + threshold;
 
 
-//Amound to add for each interval
+//Amount to add for each interval
 #define rate 10
 #define rate_x 5
 #define rate_y 3
@@ -62,6 +62,8 @@ void setup() {
   pinMode(inputA2, OUTPUT);
   pinMode(inputB1, OUTPUT);
   pinMode(inputB2, OUTPUT);
+  pinMode(inputC1, OUTPUT);
+  pinMode(inputC2, OUTPUT);
 
 //setDirection(inputC1, inputC2, true);
 }
@@ -121,6 +123,7 @@ void setDirection(int in1, int in2, bool clockwise){
     digitalWrite(in1, LOW);
     digitalWrite(in2, HIGH);  
   }
+  delay(1);
 }
 
 /*
