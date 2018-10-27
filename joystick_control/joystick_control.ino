@@ -31,10 +31,10 @@
 //Analog Read Range values
 #define analogReadMax  1023
 #define analogReadMin  0
-#define threshold  200
+#define threshold  100
 
 //Analog Write Range values
-#define analogWriteMax  255
+#define analogWriteMax  200
 #define analogWriteMin  0
 
 int lowerRange = (analogReadMax / 2) - threshold;
@@ -75,6 +75,7 @@ void loop() {
   b = analogReadWithPin(joystickB_y);
   delayMicroseconds(100);
   c = analogReadWithPin(pmeter);
+  delayMicroseconds(100);
 
   // Setup the motor spining direction
   motorOutput(enableA, inputA1, inputA2, a,  analogWriteMin, analogWriteMax, true);
@@ -112,7 +113,6 @@ void motorOutput(int en, int in1,int in2,int s,int lower, int upper,bool dir){
 
 
 
-
 void setDirection(int in1, int in2, bool clockwise){
   // if clockwise is true, the input direction is reversed
   if(clockwise){
@@ -123,7 +123,7 @@ void setDirection(int in1, int in2, bool clockwise){
     digitalWrite(in1, LOW);
     digitalWrite(in2, HIGH);  
   }
-  delay(1);
+  delayMicroseconds(100);
 }
 
 /*
